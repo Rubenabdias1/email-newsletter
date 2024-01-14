@@ -22,7 +22,7 @@ DB_NAME="${POSTGRES_DB:=newsletter}"
 DB_PORT="${POSTGRES_PORT:=5432}"
 DB_HOST="${POSTGRES_HOST:=localhost}"
 
-if [[ -z "$[SKIP_DOCKER]" ]]
+if [[ -z "${SKIP_DOCKER}" || "${SKIP_DOCKER}" == "0" ]]
 then
   docker run \
     -e POSTGRES_USER=${DB_USER} \
@@ -35,7 +35,7 @@ then
 fi
 
 export PGPASSWORD="${DB_PASSWORD}"
-until psql -h "${DB_HOST}" -U "${DB_USER}" -p "${DB_PORT}" -d "postgres" -c '\q'; do
+until psql -h "${DB_HOST}" -U "${DB_USER}" -p "${DB_PORT}" -d "${DB_NAME}" -c '\q'; do
   >&2 echo "Postgres is still unavailable - sleeping"
   sleep 1
 done
